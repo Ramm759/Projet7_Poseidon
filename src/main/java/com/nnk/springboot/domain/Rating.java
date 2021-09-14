@@ -9,26 +9,62 @@ import java.sql.Timestamp;
 @Table(name = "rating")
 public class Rating {
     @Id
-    // On dit à Hybernate que id est généré par la Bd
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
-
-    @Column(name = "modysRating")
-    @NotBlank(message = "Ce champ ne peut être vide")
-    private String modysRating;
-
-    @Column(name = "sandPRating")
-    @NotBlank(message = "Ce champ ne peut être vide")
+    @NotBlank(message = "Moodys Rating is mandatory")
+    private String moodysRating;
     private String sandPRating;
-
-    @Column(name = "fitchRating")
-    @NotBlank(message = "Ce champ ne peut être vide")
     private String fitchRating;
+    private Integer orderNumber;
 
-    @Column(name = "orderNumber")
-    @NotBlank(message = "Ce champ ne peut être vide")
-    private int orderNumber;
+    public Rating(String moodysRating, String sandPRating, String fitchRating, Integer orderNumber) {
+        this.moodysRating = moodysRating;
+        this.sandPRating = sandPRating;
+        this.fitchRating = fitchRating;
+        this.orderNumber = orderNumber;
+    }
 
+    public Rating() {
 
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getMoodysRating() {
+        return moodysRating;
+    }
+
+    public void setMoodysRating(String moodysRating) {
+        this.moodysRating = moodysRating;
+    }
+
+    public String getSandPRating() {
+        return sandPRating;
+    }
+
+    public void setSandPRating(String sandPRating) {
+        this.sandPRating = sandPRating;
+    }
+
+    public String getFitchRating() {
+        return fitchRating;
+    }
+
+    public void setFitchRating(String fitchRating) {
+        this.fitchRating = fitchRating;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 }
