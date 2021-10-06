@@ -32,7 +32,7 @@ public class BidListServiceTests {
         // Save
         bid = bidListRepository.save(bid);
         Assert.assertNotNull(bid.getBidListId()); // On vérifie que Id not Null
-        Assert.assertEquals(bid.getBidQuantity(), 10d, 10d); // TODO à voir avec Mohamed pour delta
+        Assert.assertEquals(bid.getBidQuantity(), 10d, 10d); // Delta : taux erreur accepté
 
         // Update
         bid.setBidQuantity(20d);
