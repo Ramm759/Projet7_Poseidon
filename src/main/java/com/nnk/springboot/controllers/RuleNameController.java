@@ -1,7 +1,6 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.RuleName;
-import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,13 +15,12 @@ import javax.validation.Valid;
 
 @Controller
 public class RuleNameController {
-       // TODO: Inject RuleName service
-       @Autowired
-       private RuleNameRepository ruleNameRepository;
+    // TODO: Inject RuleName service
+    @Autowired
+    private RuleNameRepository ruleNameRepository;
 
     @RequestMapping("/ruleName/list")
-    public String home(Model model)
-    {
+    public String home(Model model) {
         // TODO: find all RuleName, add to model
         model.addAttribute("ruleNameList", ruleNameRepository.findAll());
         return "ruleName/list";
@@ -55,7 +53,7 @@ public class RuleNameController {
 
     @PostMapping("/ruleName/update/{id}")
     public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
-                             BindingResult result, Model model) {
+                                 BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update RuleName and return RuleName list
         if (result.hasErrors()) {
             return "ruleName/update";

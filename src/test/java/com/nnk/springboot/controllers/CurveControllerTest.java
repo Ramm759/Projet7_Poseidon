@@ -1,6 +1,5 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import org.hamcrest.Matchers;
@@ -124,7 +123,7 @@ public class CurveControllerTest {
     @Test
     public void updateCurveAdminHasErrorTest() throws Exception {
         CurvePoint curve = curvePointRepository.save(new CurvePoint(10, 20D, 5D));
-        this.mockMvc.perform(post("/curvePoint/update/" + curve.getCurveId())
+        this.mockMvc.perform(post("/curvePoint/update/" + curve.getId())
                 .param("curveId", "10")
                 .param("term", "20D")
                 .param("value", "5dddD")
@@ -137,10 +136,6 @@ public class CurveControllerTest {
     public void deleteCurveAdminTest() throws Exception {
         CurvePoint curve = curvePointRepository.save(new CurvePoint(10, 20D, 5D));
 
-        this.mockMvc.perform(get("/curvePoint/delete/" + curve.getCurveId())).andExpect(status().isFound()).andReturn();
+        this.mockMvc.perform(get("/curvePoint/delete/" + curve.getId())).andExpect(status().isFound()).andReturn();
     }
-
-
-
-
 }
