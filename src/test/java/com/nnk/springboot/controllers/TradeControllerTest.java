@@ -27,36 +27,34 @@ public class TradeControllerTest {
     @Autowired
     TradeRepository tradeRepository;
 
-    // Requete sans connexion
     @Test
     @WithMockUser(authorities = "USER")
-    public void homeWithUserTest() throws Exception {
+    public void homeWithUserProfileTest() throws Exception {
         mockMvc.perform(get("/trade/list")).andExpect(status().isForbidden());
     }
 
-    // Requete Admin
     @Test
     @WithMockUser(authorities = "ADMIN")
-    public void homeWithAdminTest() throws Exception {
+    public void homeWithAdminProfileTest() throws Exception {
         mockMvc.perform(get("/trade/list")).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(authorities = "USER")
-    public void addWithUserTest() throws Exception {
+    public void addWithUserProfileTest() throws Exception {
         mockMvc.perform(get("/trade/add")).andExpect(status().isForbidden());
     }
 
     // Requete Admin
     @Test
     @WithMockUser(authorities = "ADMIN")
-    public void addWithAdminTest() throws Exception {
+    public void addWithAdminProfileTest() throws Exception {
         mockMvc.perform(get("/trade/add")).andExpect(status().isOk());
     }
 
     @WithMockUser(authorities = "ADMIN") // User ne peut pas insérer
     @Test
-    public void validateTradeAdminTest() throws Exception {
+    public void validateTradeWithAdminProfileTest() throws Exception {
 
         mockMvc.perform(post("/trade/validate")
                 .param("account", "Account")
@@ -67,7 +65,7 @@ public class TradeControllerTest {
 
     @WithMockUser(authorities = "ADMIN") // User ne peut pas insérer
     @Test
-    public void validateTradeAdminWithErrorTest() throws Exception {
+    public void validateTradeWithAdminProfileAndErrorTest() throws Exception {
         mockMvc.perform(post("/trade/validate")
                 .param("account", "") // account not Blank
                 .param("type", "Type")
@@ -77,7 +75,7 @@ public class TradeControllerTest {
 
     @WithMockUser(authorities = "USER")
     @Test
-    public void validateTradeUserTest() throws Exception {
+    public void validateTradeWithUserProfileTest() throws Exception {
         this.mockMvc.perform(post("/trade/validate")
                 .param("account", "Account")
                 .param("type", "Type")
@@ -87,18 +85,17 @@ public class TradeControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void showUpdateTradeWithAdminTest() throws Exception {
+    public void showUpdateTradeWithAdminProfileTest() throws Exception {
         Trade trade = tradeRepository.save(new Trade("Account", "Type"));
 
         mockMvc.perform(get("/trade/update/" + trade.getTradeId()))
                 .andExpect(model().attribute("trade", Matchers.hasProperty("account", Matchers.equalTo("Account"))))
                 .andExpect(model().attribute("trade", Matchers.hasProperty("type", Matchers.equalTo("Type"))));
-
     }
 
     @WithMockUser(authorities = "USER")
     @Test
-    public void showUpdateTradeWithUserTest() throws Exception {
+    public void showUpdateTradeWithUserProfileTest() throws Exception {
         Trade trade = tradeRepository.save(new Trade("Account", "Type"));
 
         this.mockMvc.perform(get("/trade/update/" + trade.getTradeId())).andExpect(status().isForbidden());
@@ -106,7 +103,7 @@ public class TradeControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void updateTradeAdminTest() throws Exception {
+    public void updateTradeWithAdminProfileTest() throws Exception {
         Trade trade = tradeRepository.save(new Trade("Account", "Type"));
         this.mockMvc.perform(post("/trade/update/" + trade.getTradeId())
                 .param("account", "Account")
@@ -117,7 +114,7 @@ public class TradeControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void updateTradeAdminHasErrorTest() throws Exception {
+    public void updateTradeWithAdminProfileAndErrorTest() throws Exception {
         Trade trade = tradeRepository.save(new Trade("Account", "Type"));
         this.mockMvc.perform(post("/trade/update/" + trade.getTradeId())
                 .param("account", "") // account not Blank
@@ -128,10 +125,9 @@ public class TradeControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void deleteCurveAdminTest() throws Exception {
+    public void deleteCurveWithAdminProfileTest() throws Exception {
         Trade trade = tradeRepository.save(new Trade("Account", "Type"));
 
         this.mockMvc.perform(get("/trade/delete/" + trade.getTradeId())).andExpect(status().isFound()).andReturn();
     }
-
 }

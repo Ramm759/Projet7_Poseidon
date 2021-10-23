@@ -1,6 +1,5 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.repositories.RatingRepository;
 import org.hamcrest.Matchers;
@@ -28,36 +27,33 @@ public class RatingControllerTest {
     @Autowired
     RatingRepository ratingRepository;
 
-    // Requete sans connexion
     @Test
     @WithMockUser(authorities = "USER")
-    public void homeWithUserTest() throws Exception {
+    public void homeWithUserProfileTest() throws Exception {
         mockMvc.perform(get("/rating/list")).andExpect(status().isForbidden());
     }
 
-    // Requete Admin
     @Test
     @WithMockUser(authorities = "ADMIN")
-    public void homeWithAdminTest() throws Exception {
+    public void homeWithAdminProfileTest() throws Exception {
         mockMvc.perform(get("/rating/list")).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(authorities = "USER")
-    public void addWithUserTest() throws Exception {
+    public void addWithUserProfileTest() throws Exception {
         mockMvc.perform(get("/rating/add")).andExpect(status().isForbidden());
     }
 
-    // Requete Admin
     @Test
     @WithMockUser(authorities = "ADMIN")
-    public void addWithAdminTest() throws Exception {
+    public void addWithAdminProfileTest() throws Exception {
         mockMvc.perform(get("/rating/add")).andExpect(status().isOk());
     }
 
     @WithMockUser(authorities = "ADMIN") // User ne peut pas insérer
     @Test
-    public void validateRatingAdminTest() throws Exception {
+    public void validateRatingWithAdminProfileTest() throws Exception {
         mockMvc.perform(post("/rating/validate")
                 .param("moodysRating", "MoodysRating")
                 .param("sandPRating", "SandPrading")
@@ -69,7 +65,7 @@ public class RatingControllerTest {
 
     @WithMockUser(authorities = "ADMIN") // User ne peut pas insérer
     @Test
-    public void validateRatingAdminWithErrorTest() throws Exception {
+    public void validateRatingWithAdminProfileAndWithErrorTest() throws Exception {
         mockMvc.perform(post("/rating/validate")
                 .param("moodysRating", "MoodysRating")
                 .param("sandPRating", "SandPrading")
@@ -81,7 +77,7 @@ public class RatingControllerTest {
 
     @WithMockUser(authorities = "USER")
     @Test
-    public void validateRatingtUserTest() throws Exception {
+    public void validateRatingtWithUserProfileTest() throws Exception {
         mockMvc.perform(post("/rating/validate")
                 .param("moodysRating", "MoodysRating")
                 .param("sandPRating", "SandPrading")
@@ -93,7 +89,7 @@ public class RatingControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void showUpdateRatingWithAdminTest() throws Exception {
+    public void showUpdateRatingWithAdminProfileTest() throws Exception {
         Rating rating = ratingRepository.save(new Rating("MoodysRating", "SandPRating", "FitchRating", 10));
 
         mockMvc.perform(get("/rating/update/" + rating.getId()))
@@ -103,17 +99,9 @@ public class RatingControllerTest {
                 .andExpect(model().attribute("rating", Matchers.hasProperty("orderNumber", Matchers.equalTo(10))));
     }
 
-    @WithMockUser(authorities = "USER")
-    @Test
-    public void showUpdateRatingWithUserTest() throws Exception {
-        Rating rating = ratingRepository.save(new Rating("MoodysRating", "SandPRating", "FitchRating", 10));
-
-        this.mockMvc.perform(get("/rating/update/" + rating.getId())).andExpect(status().isForbidden());
-    }
-
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void updateRatingAdminTest() throws Exception {
+    public void updateRatingWithAdminProfileTest() throws Exception {
         Rating rating = ratingRepository.save(new Rating("MoodysRating", "SandPRating", "FitchRating", 10));
         this.mockMvc.perform(post("/rating/update/" + rating.getId())
                 .param("moodysRating", "MoodysRating")
@@ -124,9 +112,17 @@ public class RatingControllerTest {
         ).andExpect(redirectedUrl("/rating/list"));
     }
 
+    @WithMockUser(authorities = "USER")
+    @Test
+    public void showUpdateRatingWithUserProfileTest() throws Exception {
+        Rating rating = ratingRepository.save(new Rating("MoodysRating", "SandPRating", "FitchRating", 10));
+
+        this.mockMvc.perform(get("/rating/update/" + rating.getId())).andExpect(status().isForbidden());
+    }
+
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void updateRatingAdminHasErrorTest() throws Exception {
+    public void updateRatingWithAdminProfileAndErrorTest() throws Exception {
         Rating rating = ratingRepository.save(new Rating("MoodysRating", "SandPRating", "FitchRating", 10));
         this.mockMvc.perform(post("/rating/update/" + rating.getId())
                 .param("moodysRating", "MoodysRating")
@@ -139,7 +135,7 @@ public class RatingControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void deleteRatingAdminTest() throws Exception {
+    public void deleteRatingWithAdminProfileTest() throws Exception {
         Rating rating = ratingRepository.save(new Rating("MoodysRating", "SandPRating", "FitchRating", 10));
 
         this.mockMvc.perform(get("/rating/delete/" + rating.getId())).andExpect(status().isFound()).andReturn();

@@ -27,37 +27,33 @@ public class BidListControllerTest {
     @Autowired
     BidListRepository bidListRepository;
 
-    // Requete sans connexion
     @Test
     @WithMockUser(authorities = "USER")
-    public void homeWithUserTest() throws Exception {
+    public void homeWithUserProfileTest() throws Exception {
         mockMvc.perform(get("/bidList/list")).andExpect(status().isForbidden());
     }
 
-    // Requete Admin
     @Test
     @WithMockUser(authorities = "ADMIN")
-    public void homeWithAdminTest() throws Exception {
+    public void homeWithAdminProfileTest() throws Exception {
         mockMvc.perform(get("/bidList/list")).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(authorities = "USER")
-    public void addWithUserTest() throws Exception {
+    public void addWithUserProfileTest() throws Exception {
         mockMvc.perform(get("/bidList/add")).andExpect(status().isForbidden());
     }
 
-    // Requete Admin
     @Test
     @WithMockUser(authorities = "ADMIN")
-    public void addWithAdminTest() throws Exception {
+    public void addWithAdminProfileTest() throws Exception {
         mockMvc.perform(get("/bidList/add")).andExpect(status().isOk());
     }
 
-
     @WithMockUser(authorities = "ADMIN") // User ne peut pas insérer
     @Test
-    public void validateBidListAdminTest() throws Exception {
+    public void validateBidListWithAdminProfileTest() throws Exception {
         mockMvc.perform(post("/bidList/validate")
                 .param("Account", "BobAccount")
                 .param("type", "livret")
@@ -68,7 +64,7 @@ public class BidListControllerTest {
 
     @WithMockUser(authorities = "ADMIN") // User ne peut pas insérer
     @Test
-    public void validateBidListAdminWithErrorTest() throws Exception {
+    public void validateBidListWithAdminProfileAndWithErrorTest() throws Exception {
         mockMvc.perform(post("/bidList/validate")
                 .param("Account", "BobAccount")
                 .param("type", "livret")
@@ -79,7 +75,7 @@ public class BidListControllerTest {
 
     @WithMockUser(authorities = "USER")
     @Test
-    public void validateBidListUserTest() throws Exception {
+    public void validateBidListWithUserProfileTest() throws Exception {
         this.mockMvc.perform(post("/bidList/validate")
                 .param("Account", "BobAccount")
                 .param("type", "livret")
@@ -90,27 +86,18 @@ public class BidListControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void showUpdateBidListWithAdminTest() throws Exception {
+    public void showUpdateBidListWithAdminProfileTest() throws Exception {
         BidList bid = bidListRepository.save(new BidList("Account", "Type", 10.0d));
 
         mockMvc.perform(get("/bidList/update/" + bid.getBidListId()))
                 .andExpect(model().attribute("bidList", Matchers.hasProperty("account", Matchers.equalTo("Account"))))
                 .andExpect(model().attribute("bidList", Matchers.hasProperty("type", Matchers.equalTo("Type"))))
                 .andExpect(model().attribute("bidList", Matchers.hasProperty("bidQuantity", Matchers.equalTo(10.0d))));
-
-}
-
-    @WithMockUser(authorities = "USER")
-    @Test
-    public void showUpdateBidListWithUserTest() throws Exception {
-        BidList bid = bidListRepository.save(new BidList("Account", "Type", 10.0d));
-
-        this.mockMvc.perform(get("/bidList/update/" + bid.getBidListId())).andExpect(status().isForbidden());
     }
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void updateBidListAdminTest() throws Exception {
+    public void updateBidListWithAdminProfileTest() throws Exception {
         BidList bid = bidListRepository.save(new BidList("Account", "Type", 10.0d));
         this.mockMvc.perform(post("/bidList/update/" + bid.getBidListId())
                 .param("account", "nuAccount")
@@ -120,9 +107,17 @@ public class BidListControllerTest {
         ).andExpect(redirectedUrl("/bidList/list"));
     }
 
+    @WithMockUser(authorities = "USER")
+    @Test
+    public void showUpdateBidListWithUserProfileTest() throws Exception {
+        BidList bid = bidListRepository.save(new BidList("Account", "Type", 10.0d));
+
+        this.mockMvc.perform(get("/bidList/update/" + bid.getBidListId())).andExpect(status().isForbidden());
+    }
+
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void updateBidListAdminHasErrorTest() throws Exception {
+    public void updateBidListWithAdminProfileAndErrorTest() throws Exception {
         BidList bid = bidListRepository.save(new BidList("Account", "Type", 10.0d));
         this.mockMvc.perform(post("/bidList/update/" + bid.getBidListId())
                 .param("account", "nuAccount")
@@ -134,7 +129,7 @@ public class BidListControllerTest {
 
     @WithMockUser(authorities = "ADMIN")
     @Test
-    public void deleteBidListAdminTest() throws Exception {
+    public void deleteBidListWithAdminProfileTest() throws Exception {
         BidList bid = bidListRepository.save(new BidList("Account", "Type", 10.0d));
 
         this.mockMvc.perform(get("/bidList/delete/" + bid.getBidListId())).andExpect(status().isFound()).andReturn();
